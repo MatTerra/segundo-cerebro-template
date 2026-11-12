@@ -18,6 +18,8 @@ Idempotente: rodar de novo depois de editar `global/` ou de mover o vault. Faz `
 
 ## Como o hook acha o projeto
 - Sobe da pasta atual até a raiz do git e compara os nomes (pasta atual, raiz e até 2 pais) com `repos:` do frontmatter de cada hub `projetos/<slug>/<slug>.md`.
+- Worktree git (`.git` é arquivo apontando para `<repo>/.git/worktrees/x`): usa o nome do repo principal. Segundo clone com outro nome de pasta: listar a pasta também em `repos:`.
+- Vários hubs casam (ex.: frente específica + conta guarda-chuva): o de menos `repos:` vem primeiro, para o corte de tamanho não esconder a frente específica.
 - Achou: status, prioridade, jira, Estado (6 linhas), até 8 tarefas abertas e 3 linhas de Log, por hub (máx. ~3500 caracteres).
 - Não achou: só o Foco do `agora.md`.
 - Dentro do vault: não injeta nada.

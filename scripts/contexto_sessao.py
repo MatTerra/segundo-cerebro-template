@@ -45,8 +45,16 @@ def secao(corpo, titulo):
 
 
 def raiz_git(pasta):
+    """Raiz do repo; em worktree (`.git` é arquivo com `gitdir: <repo>/.git/worktrees/x`), a do repo principal."""
     for p in [pasta, *pasta.parents]:
-        if (p / ".git").exists():
+        git = p / ".git"
+        if git.is_file():
+            m = re.match(r"gitdir:\s*(.+)", git.read_text(encoding="utf-8").strip())
+            alvo = Path(m.group(1)) if m else None
+            if alvo and "worktrees" in alvo.parts:
+                return alvo.parents[2] if alvo.parent.name == "worktrees" else p
+            return p
+        if git.exists():
             return p
     return pasta
 
@@ -86,7 +94,8 @@ def contexto(cwd):
         repos = campos.get("repos") or []
         repos = repos if isinstance(repos, list) else [repos]
         if {r.lower() for r in repos} & nomes:
-            ligados.append(md)
+            ligados.append((len(repos), md))
+    ligados = [md for _, md in sorted(ligados, key=lambda x: x[0])]  # frente específica antes da conta guarda-chuva
 
     cab = (f"Segundo cérebro em `{VAULT.as_posix()}` (skill `segundo-cerebro` para consultar/registrar; "
            f"protocolo em `{VAULT.as_posix()}/CLAUDE.md`).")
