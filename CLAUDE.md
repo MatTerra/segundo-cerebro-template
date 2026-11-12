@@ -16,6 +16,7 @@ Otimizar para recuperação por agente, não para estética.
 - GitHub: orgs {{GITHUB_ORGS}}; usuário {{GITHUB_USER}}.
 - Dashboard Agenda: {{URL_DASHBOARD}} (ver `scripts/atualizar-agenda.md`).
 - Tarefa agendada do dashboard: {{TAREFA_AGENDADA}}.
+- Integração global (contexto em todas as conversas): {{INTEGRACAO_GLOBAL}} (instalada | não). Ver `docs/global.md`.
 
 ## Ao iniciar sessão que envolva acompanhamento
 1. `git pull` (pode haver edição feita pelo Obsidian em outra máquina).
@@ -32,6 +33,8 @@ Otimizar para recuperação por agente, não para estética.
 - `/briefing <tema>`: pesquisa em fonte primária → `ref/`, fato vs inferência.
 - `/esquecidos`: PRs e cards parados; retrato no diário, ações `#eu` no hub.
 - `/fechar`: Log/diário, commit, push, dashboard se tarefas/marcos mudaram. Rodar ao fim de toda interação com mudanças.
+- Fora do vault: skill global `segundo-cerebro` (fonte em `global/`, instalada em `~/.claude/` por `scripts/instalar_global.py`).
+- `repos:` dos hubs precisa ter o nome exato da pasta do repo: é por ele que o hook liga uma sessão fora do vault ao projeto.
 
 Guia completo de funcionamento: `docs/funcionamento.md`. Dashboard: `docs/dashboard.md`.
 

@@ -1,6 +1,6 @@
 ---
 name: init-segundo-cerebro
-description: Configura um segundo cérebro novo a partir deste template - coleta dados do dono e das fontes (reuniões, Jira, GitHub, repos), preenche a Configuração do CLAUDE.md, cria as notas iniciais, o repositório git, o dashboard Agenda e a tarefa agendada. Use na primeira sessão do vault, ou quando o dono disser "configura o segundo cérebro", "init", "começar do zero".
+description: Configura um segundo cérebro novo a partir deste template - coleta dados do dono e das fontes (reuniões, Jira, GitHub, repos), preenche a Configuração do CLAUDE.md, cria as notas iniciais, o repositório git, o dashboard Agenda, a tarefa agendada e a integração global (contexto do vault em todas as conversas do Claude Code). Use na primeira sessão do vault, ou quando o dono disser "configura o segundo cérebro", "init", "começar do zero".
 argument-hint: "[--refazer]"
 ---
 
@@ -53,11 +53,20 @@ Seguir `docs/dashboard.md` > Criar. Gravar a URL na Configuração do `CLAUDE.md
 ## 7. Tarefa agendada (opcional, com ok)
 Criar com o tool `create_scheduled_task` (scheduled-tasks) usando o prompt de `scripts/tarefa-agendada-agenda.md`, com caminho do vault e URL do dashboard preenchidos. Sugestão: `30 7,13 * * 1-5`. Opcional também: `/esquecidos` semanal (prompt no fim do mesmo arquivo). Gravar o id em Configuração.
 
-## 8. Obsidian (ação humana, listar no fim)
+## 8. Contexto em todas as conversas (recomendado, com ok)
+Liga o vault às sessões do Claude Code fora dele (qualquer repo, qualquer pasta). Explicar as três peças e pedir ok:
+- bloco no `~/.claude/CLAUDE.md` (sempre carregado; diz onde está o vault e quando consultar/registrar);
+- skill global `~/.claude/skills/segundo-cerebro/` (consultar e registrar de fora do vault);
+- hook `SessionStart` em `~/.claude/settings.json` que roda `scripts/contexto_sessao.py` e injeta o resumo do hub cujo `repos:` contém a pasta atual (ou o Foco do `agora.md`).
+Rodar `python -I -X utf8 scripts/instalar_global.py --dry-run`, mostrar a saída, e só então sem `--dry-run`. Idempotente; faz `.bak` de `CLAUDE.md` e `settings.json`; `--remover` desfaz.
+Testar: `python -I -X utf8 scripts/contexto_sessao.py --cwd <um repo ligado a um hub>`.
+Mudou a pasta do vault: rodar o instalador de novo.
+
+## 9. Obsidian (ação humana, listar no fim)
 - Abrir a pasta como vault no Obsidian.
 - Instalar plugins da comunidade **Tasks** e **Dataview** (as consultas do `agora.md` usam Tasks).
 - Opcional: plugin Obsidian Git para sincronizar quando editar fora do Claude.
 Registrar como tarefas `#eu` em `inbox.md` o que ficar pendente.
 
-## 9. Fechar
+## 10. Fechar
 `/fechar`. Resumo final: o que foi configurado, o que ficou pendente (`#eu`), e os 3 comandos para começar: `/hoje`, `/reuniao <link>`, `/novo-projeto`.
