@@ -39,7 +39,10 @@ Rodar em paralelo e montar uma tabela ok/falta:
 - `README.md` é do template: substituir por 3 linhas ("Segundo cérebro de <nome>. Ver CLAUDE.md.").
 
 ## 4. Git
-- Se a pasta veio de `git clone` do template: `git remote remove origin` (o histórico do template não importa; opcionalmente `rm -rf .git && git init`).
+- **Antes de mexer no git**, ligar o vault ao template para receber atualizações (`/update-segundo-cerebro`):
+  - veio de `git clone`: `python -I -X utf8 scripts/atualizar_template.py --iniciar "$(git remote get-url origin)" --base HEAD`;
+  - veio de download/cópia sem git: `--iniciar <url do template>` (base = template atual).
+  Isso grava `.segundo-cerebro/template.json` e o remoto `template`. Depois: `git remote remove origin` (opcionalmente `rm -rf .git && git init`; o vínculo continua valendo, o remoto `template` é recriado sozinho).
 - `git init` se preciso; branch `main`; commit inicial "Vault configurado".
 - Remoto conforme o passo 2 (só com ok). Confirmar que é **privado**: `gh repo view --json visibility`.
 

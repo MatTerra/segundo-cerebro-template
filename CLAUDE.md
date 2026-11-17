@@ -26,6 +26,7 @@ Otimizar para recuperação por agente, não para estética.
 
 ## Skills do vault (`.claude/skills/`, usar em vez de improvisar)
 - `/init-segundo-cerebro`: configuração inicial (uma vez por vault).
+- `/update-segundo-cerebro`: traz novidades do template (skills, scripts, docs) com merge de 3 vias; personalização e conteúdo pessoal ficam. Ver `docs/atualizar.md`.
 - `/reuniao <link|tema> [--cards]`: reunião → nota em `reunioes/`, tarefas no hub, Log, diário.
 - `/novo-projeto`: pasta + hub + subnotas + reuniões para frente nova.
 - `/hoje`: pendências do dia (`scripts/hoje.py` + fontes externas configuradas).

@@ -12,12 +12,13 @@ Quem mantém o vault é o Claude; você conversa, ele registra, lembra e cobra.
   - `/novo-projeto` — cria uma frente de trabalho;
   - `/briefing <tema>` — pesquisa em fonte primária;
   - `/esquecidos` — PRs e cards parados;
+  - `/update-segundo-cerebro` — traz para a sua cópia as novidades deste template, sem perder a sua personalização;
   - `/turno <texto>` — registra início, pausas e fim do dia ("entrei 8h", "almoço 12h30") com total de horas, quase sem gastar token;
   - `/worklog [data]` — reconstrói o dia e propõe lançamento de horas no Jira;
   - `/fechar` — commit, push e atualização do dashboard.
-- `scripts/` — `hoje.py` (pendências), `turno.py` (horários do dia), `agenda_json.py` (dados do dashboard), `fellow_extrair.py` (Fellow), procedimento e prompts de tarefa agendada.
+- `scripts/` — `hoje.py` (pendências), `atualizar_template.py` (atualização a partir do template), `turno.py` (horários do dia), `agenda_json.py` (dados do dashboard), `fellow_extrair.py` (Fellow), procedimento e prompts de tarefa agendada.
 - `global/` + `scripts/instalar_global.py` — integração no nível do usuário: o vault dá contexto a **todas** as conversas do Claude Code, mesmo fora dele (bloco no `~/.claude/CLAUDE.md`, skill global `segundo-cerebro`, hook `SessionStart` que injeta o projeto ligado ao repo atual).
-- `docs/` — `funcionamento.md` (como o sistema funciona), `dashboard.md` (criação e dados do painel Agenda), `global.md` (integração global), `fontes.md` (Jira, GitHub, reuniões).
+- `docs/` — `funcionamento.md` (como o sistema funciona), `atualizar.md` (receber novidades do template), `dashboard.md` (criação e dados do painel Agenda), `global.md` (integração global), `fontes.md` (Jira, GitHub, reuniões).
 - `templates/`, `ref/`, `agora.md`, `inbox.md` — esqueletos vazios.
 
 ## Requisitos
@@ -29,7 +30,8 @@ Quem mantém o vault é o Claude; você conversa, ele registra, lembra e cobra.
 1. Copiar este template para uma pasta sua (ex.: `git clone <este repo> meu-segundo-cerebro`).
 2. Abrir a pasta no Claude Code.
 3. Rodar `/init-segundo-cerebro` e responder às perguntas. Ele configura o `CLAUDE.md`, cria o repositório privado, os primeiros projetos, o dashboard, a tarefa agendada e a integração global (pedindo ok em cada passo externo).
-4. No dia a dia: `/hoje` de manhã, `/reuniao` depois de cada reunião, `/fechar` no fim.
+4. No dia a dia: `/hoje` de manhã, `/turno` ao começar e parar, `/reuniao` depois de cada reunião, `/fechar` no fim.
+5. De tempos em tempos: `/update-segundo-cerebro` para receber melhorias do template.
 
 ## Privacidade
 O vault vai guardar informação de trabalho: manter o repositório **privado**. Nunca registrar senhas, tokens ou dados pessoais de clientes (o `CLAUDE.md` já instrui o Claude a não fazer isso).
