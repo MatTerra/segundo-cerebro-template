@@ -34,6 +34,26 @@
 - Fim: `/fechar` (commit, push, dashboard). Se lança horas: `/worklog` (usa a linha `Turno:` como total do dia).
 - Semanal: `/esquecidos` (PRs e cards parados); revisar `inbox.md` e `confianca: inferido`.
 
+## Turno (horários do dia)
+`/turno <texto livre>` registra quando o dia começou, pausou, voltou e terminou. Fora do vault, a skill global `segundo-cerebro` chama o mesmo script pelo caminho absoluto.
+
+| pedido | efeito |
+|---|---|
+| `/turno entrei 0800 e pretendo almoçar 1230` | abre 08:00 e marca a pausa prevista `~12:30` |
+| `/turno voltei 13h30` | confirma a pausa prevista e abre 13:30 |
+| `/turno saí agora` | fecha o intervalo aberto na hora atual |
+| `/turno` | só mostra o dia |
+| `/turno desfaz` | remove a última marcação |
+| `/turno ontem saí 18h` | outro dia (`ontem`, `anteontem` ou `YYYY-MM-DD`) |
+
+- Horários aceitos: `08:00`, `8:00`, `0800`, `8h`, `8h30`, `8`, `agora`. Palavras como entrei/comecei/voltei abrem; almoço/pausa/saí/parei fecham; pretendo/vou/previsto marcam como previsto. Sem palavra, alterna: abre se não há intervalo aberto, fecha se há.
+- Linha gravada logo abaixo do título de `diario/YYYY-MM-DD.md` (cria o diário de `templates/diario.md` se faltar):
+  `Turno: 08:00–12:30 · 13:30–~18:00 · total 9h00 (previsto)`. `~HH:MM` = previsto; `…` = aberto. O total conta o aberto até agora (só hoje) e o previsto como se fosse cumprido.
+- Correções: novo "entrei" com intervalo aberto corrige o início; novo "saí" corrige o último fim. Recusa fim antes do início e início antes do fim anterior (sai com `ERRO` e não grava).
+- Git: `pull --ff-only`, depois commit e push **só** do arquivo do diário. `--sem-git` pula (testes).
+- Custo: a skill roda no modelo `haiku` e recebe a saída do script já pronta (injeção `` !`comando` ``), sem chamada de ferramenta. Script: `scripts/turno.py` (docstring com exemplos).
+- `/worklog` usa essa linha como total do dia.
+
 ## Tarefas
 Formato do plugin Tasks, sempre no hub (ou `inbox.md`):
 ```

@@ -5,7 +5,7 @@ O `CLAUDE.md` do vault só vale para sessões abertas dentro do vault. Para que 
 | peça | fonte no vault | destino | quando age |
 |---|---|---|---|
 | Bloco de instruções | `global/CLAUDE.md` | `~/.claude/CLAUDE.md` (entre marcadores `segundo-cerebro:inicio/fim`) | sempre carregado: diz onde está o vault e quando consultar/registrar |
-| Skill `segundo-cerebro` | `global/skills/segundo-cerebro/` | `~/.claude/skills/segundo-cerebro/` | conversa sobre projeto, cliente, card, prazo, reunião, pessoa; "anota no segundo cérebro" |
+| Skill `segundo-cerebro` | `global/skills/segundo-cerebro/` | `~/.claude/skills/segundo-cerebro/` | conversa sobre projeto, cliente, card, prazo, reunião, pessoa; "anota no segundo cérebro"; horários do dia ("entrei 8h": chama `scripts/turno.py`) |
 | Hook `SessionStart` | `scripts/contexto_sessao.py` | `~/.claude/settings.json` | início de cada sessão: injeta o resumo do hub ligado ao repo atual |
 
 ## Instalar / atualizar / remover

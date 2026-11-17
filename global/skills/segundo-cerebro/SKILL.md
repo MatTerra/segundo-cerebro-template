@@ -1,6 +1,6 @@
 ---
 name: segundo-cerebro
-description: Consulta e alimenta o segundo cérebro (vault em {{CAMINHO_VAULT}}) a partir de QUALQUER conversa, mesmo fora do vault. Use quando a conversa envolver um projeto, cliente, card Jira, reunião, prazo, decisão ou pessoa do trabalho do dono; quando ele perguntar "o que sabemos sobre X", "qual o estado de X", "o que falta em X"; quando disser "anota/registra no segundo cérebro"; ou quando surgir decisão, prazo ou pendência que valha guardar.
+description: Consulta e alimenta o segundo cérebro (vault em {{CAMINHO_VAULT}}) a partir de QUALQUER conversa, mesmo fora do vault. Use quando a conversa envolver um projeto, cliente, card Jira, reunião, prazo, decisão ou pessoa do trabalho do dono; quando ele perguntar "o que sabemos sobre X", "qual o estado de X", "o que falta em X"; quando disser "anota/registra no segundo cérebro"; ou quando surgir decisão, prazo ou pendência que valha guardar. Também horários do dia: "entrei 8h", "vou almoçar 12h30", "voltei", "saí agora", "quantas horas fiz hoje".
 argument-hint: "[consultar <tema> | registrar <info>]"
 ---
 
@@ -26,6 +26,11 @@ Não vale: detalhe de implementação que já está no código/commit, backlog d
 3. Commit só dos arquivos do vault: `git -C "{{CAMINHO_VAULT}}" add -A && git -C "{{CAMINHO_VAULT}}" commit -m "<projeto>: <resumo>" && git -C "{{CAMINHO_VAULT}}" push`.
 4. Tocou tarefa ou `marcos:`: avisar que o dashboard atualiza na próxima execução agendada (ou rodar `scripts/atualizar-agenda.md` se o dono pedir).
 5. Dizer em uma linha o que foi registrado e onde.
+
+## Turno (horários do dia)
+"Entrei 8h", "almoço 12h30", "voltei", "saí agora", "quantas horas hoje": rodar o script com o texto do dono, sem ler nem editar o diário:
+`python -I -X utf8 "{{CAMINHO_VAULT}}/scripts/turno.py" <texto>`
+Ele grava a linha `Turno:` do diário e faz commit e push só desse arquivo. Responder em uma linha com a saída; se começar com `ERRO`, pedir o horário. Sem texto: só mostra o dia. `desfaz` remove a última marcação; `ontem` ou `YYYY-MM-DD` muda o dia.
 
 ## Regras
 - Datas absolutas sempre.
