@@ -7,7 +7,7 @@ Seções:
 - **Uma coluna por gestor**: frentes em andamento ou pausadas, devs, nota e prazo (vencido, até 7 dias, depois, sem prazo).
 - **Em especificação** (para alocar) e **Backlog** (contexto).
 - **Sair com dono e prazo**: frentes em andamento sem dev ou sem prazo.
-- **Gantt**: todas as pessoas de `equipe.md` em ordem alfabética, inclusive sem frente; 6 meses a partir de hoje; ausências hachuradas; feriados tracejados; frente sem prazo esmaece.
+- **Gantt**: todas as pessoas de `equipe.md` em ordem alfabética, inclusive sem frente; 6 meses a partir de hoje; ausências hachuradas, interrompendo as barras das frentes do dev (férias coletivas = uma linha por pessoa em `equipe.md`); feriados tracejados; frente sem prazo esmaece.
 
 ## Dados
 

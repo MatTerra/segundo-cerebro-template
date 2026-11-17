@@ -246,6 +246,23 @@ def pill(fim, hoje, vazio="—"):
     return f'<span class="d {cls}">{txt}</span>'
 
 
+def cortar(ini, fim, buracos):
+    """Partes de [ini, fim] fora dos períodos em `buracos` (ausências interrompem a frente)."""
+    partes = [(ini, fim)]
+    for bi, bf in sorted(buracos):
+        novas = []
+        for a, b in partes:
+            if bf < a or bi > b:
+                novas.append((a, b))
+                continue
+            if a < bi:
+                novas.append((a, bi - timedelta(days=1)))
+            if bf < b:
+                novas.append((bf + timedelta(days=1), b))
+        partes = novas
+    return partes
+
+
 def gantt(itens, a, ausencias, feriados, hoje, meses):
     d0 = hoje
     m, y = hoje.month + meses, hoje.year
@@ -267,6 +284,7 @@ def gantt(itens, a, ausencias, feriados, hoje, meses):
     h = [f'<div></div><div class="axis">{eixo}</div>']
     for dev in a["devs"]:
         barras = []
+        buracos = [(x["ini"], x["fim"]) for x in ausencias if x["dev"] == dev]
         for x in ausencias:
             if x["dev"] == dev and x["fim"] >= d0:
                 barras.append((max(x["ini"], d0), x["fim"], x["motivo"], "off", x["motivo"]))
@@ -277,12 +295,15 @@ def gantt(itens, a, ausencias, feriados, hoje, meses):
             ini = max(i["ini"] or d0, d0)
             if i["fim"] and i["fim"] < d0:
                 continue
+            # ausência do dev (férias, coletivas) interrompe a barra da frente
             if i["fim"]:
                 cls = "soon" if i["fim"] <= hoje + timedelta(days=7) else ""
                 cls += " pause" if i["estado"] == "pausado" else ""
-                barras.append((ini, i["fim"], i["frente"], cls, i["fim"].strftime("%d/%m")))
+                for pi, pf in cortar(ini, i["fim"], buracos):
+                    barras.append((pi, pf, i["frente"], cls, i["fim"].strftime("%d/%m")))
             else:
-                barras.append((ini, ini + timedelta(days=21), i["frente"], "open", "sem prazo"))
+                for pi, pf in cortar(ini, ini + timedelta(days=21), buracos):
+                    barras.append((pi, pf, i["frente"], "open", "sem prazo"))
         barras.sort(key=lambda b: b[0])
         lanes = []  # sub-faixas sem sobreposição
         for b in barras:
