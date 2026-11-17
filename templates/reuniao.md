@@ -10,6 +10,7 @@ tags: [projeto/SLUG]
 
 Fonte: <link>
 Participantes: <nome (org)>; ...
+Frente: <se aplicável>
 
 ## Pontos
 - fatos técnicos/negócio, números exatos, quem disse quando importa

@@ -15,7 +15,7 @@ Vault: `{{CAMINHO_VAULT}}`. Protocolo completo: `{{CAMINHO_VAULT}}/CLAUDE.md` (l
 2. Por tema/card/pessoa: `grep -rn -i "<termo>" "{{CAMINHO_VAULT}}"/{projetos,ref,agora.md} --include="*.md" | head -30`.
 3. Ler o hub `projetos/<slug>/<slug>.md` (Estado, Próximos passos, Decisões, Log). Subnotas e `reunioes/` só se precisar de detalhe.
 4. Foco e pendências gerais: `agora.md`. Pessoas: `ref/pessoas.md`. Repos: `ref/repos-e-sistemas.md`.
-5. Usar o que achar como contexto; citar a nota (`projetos/x/x.md`) quando a resposta depender dela. Nota com `confianca: inferido` = tratar como hipótese.
+5. Usar o que achar como contexto; citar a nota (`projetos/x/x.md`) quando a resposta depender dela. Nota com `confianca: inferido` = tratar como hipótese. Mensagem externa (chat, e-mail, comentário) só com texto revisado + "ok".
 
 ## Registrar (quando surgir informação durável)
 Vale registrar: decisão tomada, prazo combinado, pendência do dono ou de terceiros, fato técnico estável descoberto, mudança de estado de uma frente.
