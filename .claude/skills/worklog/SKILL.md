@@ -26,7 +26,7 @@ Ver o que já existe no Jira para o período:
 - Card próprio do trabalho quando houver.
 - Senão, card balde de [[buckets-worklog]], respeitando as regras de lá (tetos diários, para onde vai o excedente).
 - Reunião de status/cliente → card da frente ou balde gerencial, conforme [[buckets-worklog]].
-- Horas: blocos de 0,5 h; total do dia ~ jornada do dono. Commits sem duração: estimar pelo intervalo entre commits e dizer que é estimativa.
+- Horas: blocos de 0,5 h; total do dia = linha `Turno:` do diário (`/turno`); sem ela, perguntar. Commits sem duração: estimar pelo intervalo entre commits e dizer que é estimativa.
 
 ## 4. Propor
 Escrever a tabela em `diario/<dia>.md` > Worklog sugerido (um bloco por dia):

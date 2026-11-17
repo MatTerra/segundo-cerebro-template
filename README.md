@@ -12,9 +12,10 @@ Quem mantém o vault é o Claude; você conversa, ele registra, lembra e cobra.
   - `/novo-projeto` — cria uma frente de trabalho;
   - `/briefing <tema>` — pesquisa em fonte primária;
   - `/esquecidos` — PRs e cards parados;
+  - `/turno <texto>` — registra início, pausas e fim do dia ("entrei 8h", "almoço 12h30") com total de horas, quase sem gastar token;
   - `/worklog [data]` — reconstrói o dia e propõe lançamento de horas no Jira;
   - `/fechar` — commit, push e atualização do dashboard.
-- `scripts/` — `hoje.py` (pendências), `agenda_json.py` (dados do dashboard), `fellow_extrair.py` (Fellow), procedimento e prompts de tarefa agendada.
+- `scripts/` — `hoje.py` (pendências), `turno.py` (horários do dia), `agenda_json.py` (dados do dashboard), `fellow_extrair.py` (Fellow), procedimento e prompts de tarefa agendada.
 - `global/` + `scripts/instalar_global.py` — integração no nível do usuário: o vault dá contexto a **todas** as conversas do Claude Code, mesmo fora dele (bloco no `~/.claude/CLAUDE.md`, skill global `segundo-cerebro`, hook `SessionStart` que injeta o projeto ligado ao repo atual).
 - `docs/` — `funcionamento.md` (como o sistema funciona), `dashboard.md` (criação e dados do painel Agenda), `global.md` (integração global), `fontes.md` (Jira, GitHub, reuniões).
 - `templates/`, `ref/`, `agora.md`, `inbox.md` — esqueletos vazios.

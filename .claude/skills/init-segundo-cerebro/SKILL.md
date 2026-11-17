@@ -69,4 +69,4 @@ Mudou a pasta do vault: rodar o instalador de novo.
 Registrar como tarefas `#eu` em `inbox.md` o que ficar pendente.
 
 ## 10. Fechar
-`/fechar`. Resumo final: o que foi configurado, o que ficou pendente (`#eu`), e os 3 comandos para começar: `/hoje`, `/reuniao <link>`, `/novo-projeto`.
+`/fechar`. Resumo final: o que foi configurado, o que ficou pendente (`#eu`), e os 3 comandos para começar: `/hoje`, `/reuniao <link>`, `/novo-projeto` (e `/turno` para registrar horários do dia).

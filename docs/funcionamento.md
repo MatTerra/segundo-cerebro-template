@@ -30,7 +30,8 @@
 - Início: `/hoje` (pendências do vault + reuniões + cards).
 - Durante: cada informação nova vai para o lugar certo na mesma hora.
 - Reuniões: `/reuniao <link>` logo depois.
-- Fim: `/fechar` (commit, push, dashboard). Se lança horas: `/worklog`.
+- Ao longo do dia: `/turno entrei 8h`, `/turno almoço 12h30`, `/turno saí agora` (grava, commita e dá push só do diário).
+- Fim: `/fechar` (commit, push, dashboard). Se lança horas: `/worklog` (usa a linha `Turno:` como total do dia).
 - Semanal: `/esquecidos` (PRs e cards parados); revisar `inbox.md` e `confianca: inferido`.
 
 ## Tarefas

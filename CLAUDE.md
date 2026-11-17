@@ -30,6 +30,7 @@ Otimizar para recuperação por agente, não para estética.
 - `/novo-projeto`: pasta + hub + subnotas + reuniões para frente nova.
 - `/hoje`: pendências do dia (`scripts/hoje.py` + fontes externas configuradas).
 - `/worklog [data]`: reconstruir dia, propor tabela de horas, lançar só com "ok".
+- `/turno <texto>`: início/pausa/volta/fim do dia na linha `Turno:` do diário, via `scripts/turno.py` (haiku, uma linha de resposta). "Entrei 8h", "almoço 12h30" dito em qualquer conversa: usar o script, não editar à mão.
 - `/briefing <tema>`: pesquisa em fonte primária → `ref/`, fato vs inferência.
 - `/esquecidos`: PRs e cards parados; retrato no diário, ações `#eu` no hub.
 - `/fechar`: Log/diário, commit, push, dashboard se tarefas/marcos mudaram. Rodar ao fim de toda interação com mudanças.
