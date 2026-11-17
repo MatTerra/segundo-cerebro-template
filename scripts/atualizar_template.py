@@ -48,6 +48,7 @@ def gravar_conf(c):
 def buscar(c):
     if git("remote", "get-url", REMOTO, ok=False).returncode != 0:
         git("remote", "add", "--no-tags", REMOTO, c["url"])
+    git("remote", "set-url", "--push", REMOTO, "NUNCA-dar-push-do-vault-pessoal-no-template")
     git("fetch", "-q", "--no-tags", REMOTO, c["branch"])
     return git("rev-parse", f"{REMOTO}/{c['branch']}").stdout.strip()
 
