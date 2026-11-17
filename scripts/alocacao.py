@@ -111,17 +111,19 @@ def analisar(itens, pessoas, ausencias, hoje):
     devs = sorted(set(pessoas) or {i["dev"] for i in itens if i["dev"]}, key=lambda s: sem_acento(s).lower())
     aus_hoje = {a["dev"]: a for a in ausencias if a["ini"] <= hoje <= a["fim"]}
     por_dev = {dev: [i for i in itens if i["dev"] == dev and ativo(i, hoje)] for dev in devs}
-    futuros = {dev: [i for i in itens if i["dev"] == dev and i["estado"] == "andamento" and (i["ini"] or hoje) > hoje] for dev in devs}
+    # compromisso futuro: andamento que ainda não começou ou pausado com data de retomada
+    futuros = {dev: [i for i in itens if i["dev"] == dev and i["ini"] and i["ini"] > hoje
+                     and i["estado"] in ("andamento", "pausado")] for dev in devs}
     return {
         "devs": devs,
         "ausentes": [a for a in ausencias if a["fim"] >= hoje],
         "sobrecarga": {dev: l for dev, l in por_dev.items() if len({x["frente"] for x in l}) > 1},
         "livres": [dev for dev in devs if not por_dev[dev] and dev not in aus_hoje and not futuros[dev]],
-        "livres_depois": {dev: max(x["fim"] for x in l) for dev, l in por_dev.items()
-                          if l and all(x["fim"] for x in l) and not futuros[dev]},
+        "livres_depois": {dev: max(x["fim"] for x in por_dev[dev] + futuros[dev]) for dev in devs
+                          if por_dev[dev] and all(x["fim"] for x in por_dev[dev] + futuros[dev])},
         "sem_dono": frentes_sem(itens, lambda l: all(not x["dev"] for x in l)),
         "sem_prazo": frentes_sem(itens, lambda l: all(x["fim"] is None for x in l)),
-        "vencidos": [i for i in itens if i["estado"] == "andamento" and i["fim"] and i["fim"] < hoje],
+        "vencidos": list({i["frente"]: i for i in itens if i["estado"] == "andamento" and i["fim"] and i["fim"] < hoje}.values()),
     }
 
 
@@ -139,8 +141,13 @@ def frentes_sem(itens, cond):
 
 # ---------- saída: texto ----------
 
+ANO = date.today().year  # main() ajusta para o ano de --hoje
+
+
 def fmt(x):
-    return x.strftime("%m-%d") if x else "sem prazo"
+    if not x:
+        return "sem prazo"
+    return x.strftime("%m-%d") if x.year == ANO else x.isoformat()
 
 
 def texto(itens, a, hoje):
@@ -311,14 +318,14 @@ def gantt(itens, a, ausencias, feriados, hoje, meses):
 def pagina(itens, a, ausencias, feriados, hoje, titulo, meses, ordem):
     cap = []
     if a["ausentes"]:
-        cap.append("Ausentes: " + ", ".join(f"{x['dev']} (até {x['fim'].strftime('%m-%d')})" for x in a["ausentes"]))
+        cap.append("Ausentes: " + ", ".join(f"{x['dev']} (até {fmt(x['fim'])})" for x in a["ausentes"]))
     if a["sobrecarga"]:
         cap.append("Em mais de uma frente: " + ", ".join(f"{dev} ({len({x['frente'] for x in l})})" for dev, l in a["sobrecarga"].items()))
     cap.append("Sem frente hoje: " + (", ".join(a["livres"]) or "ninguém"))
     if a["livres_depois"]:
-        cap.append("Ficam livres: " + ", ".join(f"{dev} após {x.strftime('%m-%d')}" for dev, x in sorted(a["livres_depois"].items(), key=lambda t: t[1])))
+        cap.append("Ficam livres: " + ", ".join(f"{dev} após {fmt(x)}" for dev, x in sorted(a["livres_depois"].items(), key=lambda t: t[1])))
     if a["vencidos"]:
-        cap.append("Prazo vencido: " + ", ".join(dict.fromkeys(i["frente"] for i in a["vencidos"])))
+        cap.append("Prazo vencido: " + ", ".join(i["frente"] for i in a["vencidos"]))
     secs = [f'<section><h2>Capacidade</h2><div class="cap">{"".join(f"<div>{E(c)}</div>" for c in cap)}</div></section>']
 
     cols = []
@@ -382,7 +389,9 @@ def main():
     o = ap.parse_args()
     if not o.texto and not o.saida:
         ap.error("informe <saida.html> ou --texto")
+    global ANO
     hoje = d(o.hoje) or date.today()
+    ANO = hoje.year
     itens = ler_alocacao({p.strip() for p in o.projetos.split(",") if p.strip()} or None)
     pessoas, ausencias, feriados = ler_equipe()
     a = analisar(itens, pessoas, ausencias, hoje)
