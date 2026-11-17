@@ -8,7 +8,7 @@ Fontes no vault:
   Frente com dois devs = duas linhas. Gestor com mais de um nome: "Ana, Bia" (aparece nas duas colunas).
 - `equipe.md` na raiz (modelo em templates/equipe.md): seções `## Pessoas` (uma pessoa por linha,
   "- Nome"), `## Ausências` ("- Nome | início | fim | motivo") e `## Feriados` ("- YYYY-MM-DD | nome").
-  Sem equipe.md, as pessoas do Gantt saem dos devs citados em `alocacao:`.
+  Com equipe.md, o Gantt e a capacidade mostram só as pessoas listadas; sem ele, os devs citados em `alocacao:`.
 
 Uso:
   python -I -X utf8 scripts/alocacao.py <saida.html> [--titulo T] [--projetos a,b] [--gestores A,B] [--meses 6] [--hoje YYYY-MM-DD]
@@ -107,7 +107,8 @@ def ativo(i, hoje):
 
 
 def analisar(itens, pessoas, ausencias, hoje):
-    devs = sorted(set(pessoas) | {i["dev"] for i in itens if i["dev"]}, key=lambda s: sem_acento(s).lower())
+    # com equipe.md, só as pessoas listadas (gestor que executa algo não vira linha); sem ele, todos os devs citados
+    devs = sorted(set(pessoas) or {i["dev"] for i in itens if i["dev"]}, key=lambda s: sem_acento(s).lower())
     aus_hoje = {a["dev"]: a for a in ausencias if a["ini"] <= hoje <= a["fim"]}
     por_dev = {dev: [i for i in itens if i["dev"] == dev and ativo(i, hoje)] for dev in devs}
     futuros = {dev: [i for i in itens if i["dev"] == dev and i["estado"] == "andamento" and (i["ini"] or hoje) > hoje] for dev in devs}

@@ -38,7 +38,7 @@ Formato: `"frente | estado | gestor | dev | início | fim | nota"`.
 ## Feriados
 - 2027-04-21 | Tiradentes
 ```
-`Pessoas` define quem aparece no Gantt (sem frente também). Sem o arquivo, entram só os devs citados em `alocacao:`.
+`Pessoas` define quem aparece no Gantt e na capacidade (sem frente também); dev de `alocacao:` fora da lista (ex.: o gestor que executa uma frente) só aparece na coluna. Sem o arquivo, entram os devs citados em `alocacao:`.
 
 ## Gerar
 ```bash
