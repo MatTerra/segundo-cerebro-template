@@ -74,6 +74,9 @@ Formato do plugin Tasks, sempre no hub (ou `inbox.md`):
 ## Escrita externa
 Worklog, comentário em card, transição, criação de card, mensagem, e-mail, publicação: **só com "ok" explícito do dono na conversa**. Propor primeiro (tabela, rascunho), executar depois.
 
+## Alocação da equipe
+Ver `docs/alocacao.md`. Dev, gestor e período de cada frente em `alocacao:` no hub; pessoas, ausências e feriados em `equipe.md`. `/alocacao` publica a página (colunas por gestor, sem dono, sem prazo, Gantt) e `/alocacao --texto` responde no chat.
+
 ## Dashboard
 Ver `docs/dashboard.md`. Gerado dos mesmos dados que o `/hoje`; atualizado por `/fechar` e por tarefa agendada.
 

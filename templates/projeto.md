@@ -10,6 +10,7 @@ atualizado: {{date}}
 confianca: confirmado
 tags: [projeto/SLUG]
 marcos: []
+alocacao: []
 ---
 # Título
 

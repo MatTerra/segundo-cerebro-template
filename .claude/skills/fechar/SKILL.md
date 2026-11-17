@@ -17,4 +17,5 @@ description: Fecha uma interação no segundo cérebro - confere Log/diário, co
 4. A mudança tocou linha de tarefa (`- [ ]`, `- [x]`, `📅`, `⏳`, `✅`) ou `marcos:` em algum hub?
    `git diff HEAD~1 -U0 | grep -E '^[+-].*(- \[.\]|📅|⏳|✅|marcos:|^\+  - ")'`
    Se sim e há dashboard configurado: seguir `scripts/atualizar-agenda.md` (sem commit, é só o dashboard).
-5. Resumo em 1–2 linhas: commit, push, dashboard atualizado ou não.
+   Mudou `alocacao:` em algum hub ou `equipe.md` e há página de alocação configurada: seguir "Publicar" de `/alocacao`.
+5. Resumo em 1–2 linhas: commit, push, dashboard e página de alocação atualizados ou não.

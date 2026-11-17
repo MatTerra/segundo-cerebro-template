@@ -16,6 +16,7 @@ Otimizar para recuperação por agente, não para estética.
 - GitHub: orgs {{GITHUB_ORGS}}; usuário {{GITHUB_USER}}.
 - Dashboard Agenda: {{URL_DASHBOARD}} (ver `scripts/atualizar-agenda.md`).
 - Tarefa agendada do dashboard: {{TAREFA_AGENDADA}}.
+- Página de alocação: {{URL_ALOCACAO}} (título e ordem dos gestores: {{ALOCACAO_OPCOES}}; ver `docs/alocacao.md`; "nenhuma" se o dono não gerencia equipe).
 - Integração global (contexto em todas as conversas): {{INTEGRACAO_GLOBAL}} (instalada | não). Ver `docs/global.md`.
 
 ## Ao iniciar sessão que envolva acompanhamento
@@ -34,11 +35,12 @@ Otimizar para recuperação por agente, não para estética.
 - `/turno <texto>`: início/pausa/volta/fim do dia na linha `Turno:` do diário, via `scripts/turno.py` (haiku, uma linha de resposta). "Entrei 8h", "almoço 12h30" dito em qualquer conversa: usar o script, não editar à mão.
 - `/briefing <tema>`: pesquisa em fonte primária → `ref/`, fato vs inferência.
 - `/esquecidos`: PRs e cards parados; retrato no diário, ações `#eu` no hub.
-- `/fechar`: Log/diário, commit, push, dashboard se tarefas/marcos mudaram. Rodar ao fim de toda interação com mudanças.
+- `/alocacao [--texto]`: quem está em qual frente e até quando, sem dono, sem prazo, livres, Gantt; gerado de `alocacao:` nos hubs + `equipe.md` (`scripts/alocacao.py`). Mudança de dev/prazo/ausência dita pelo dono: editar esses dados e republicar.
+- `/fechar`: Log/diário, commit, push, dashboard se tarefas/marcos mudaram, página de alocação se `alocacao:`/`equipe.md` mudaram. Rodar ao fim de toda interação com mudanças.
 - Fora do vault: skill global `segundo-cerebro` (fonte em `global/`, instalada em `~/.claude/` por `scripts/instalar_global.py`).
 - `repos:` dos hubs precisa ter o nome exato da pasta do repo: é por ele que o hook liga uma sessão fora do vault ao projeto.
 
-Guia completo de funcionamento: `docs/funcionamento.md`. Dashboard: `docs/dashboard.md`.
+Guia completo de funcionamento: `docs/funcionamento.md`. Dashboard: `docs/dashboard.md`. Alocação: `docs/alocacao.md`.
 
 ## Gotchas de ambiente
 - Python no Windows: rodar com `-X utf8` (ou `PYTHONIOENCODING=utf-8`); cp1252 quebra com acento/emoji.
@@ -49,7 +51,7 @@ Guia completo de funcionamento: `docs/funcionamento.md`. Dashboard: `docs/dashbo
 - (Acrescentar aqui gotchas novos do ambiente do dono, com data.)
 
 ## Convenções Obsidian (usar sempre)
-- Frontmatter YAML em toda nota. Campos de projeto: `tipo: projeto`, `status: ativo|bloqueado|aguardando|pausado|concluido`, `prioridade: 1-3` (1=alta), `jira: [KEY-123]`, `repos: [nome-pasta]`, `atualizado: YYYY-MM-DD`, `confianca: confirmado|inferido` (inferido = deduzido de git/memória, falta o dono confirmar), `marcos:` (prazos da frente).
+- Frontmatter YAML em toda nota. Campos de projeto: `tipo: projeto`, `status: ativo|bloqueado|aguardando|pausado|concluido`, `prioridade: 1-3` (1=alta), `jira: [KEY-123]`, `repos: [nome-pasta]`, `atualizado: YYYY-MM-DD`, `confianca: confirmado|inferido` (inferido = deduzido de git/memória, falta o dono confirmar), `marcos:` (prazos da frente), `alocacao:` (dev, gestor e período por frente; ver `docs/alocacao.md`).
 - Links `[[nome-da-nota]]` entre projetos, refs, diário. Nome de arquivo = slug kebab-case, sem acento.
 - Tarefas no formato do plugin Tasks: `- [ ] texto 📅 YYYY-MM-DD` (prazo), `⏳ YYYY-MM-DD` (agendado), `✅ YYYY-MM-DD` ao concluir, `#bloqueado` / `#aguardando/<pessoa>` / `#eu` (ação humana).
 - Callouts: `> [!warning]` gotcha, `> [!decision]` decisão com data e motivo, `> [!question]` pergunta aberta para o dono.
@@ -57,6 +59,7 @@ Guia completo de funcionamento: `docs/funcionamento.md`. Dashboard: `docs/dashbo
 - Datas absolutas sempre (nunca "ontem", "semana que vem").
 
 ## Estrutura
+- `equipe.md` — pessoas do time, ausências e feriados (para `/alocacao`).
 - `agora.md` — foco atual, top prioridades, perguntas abertas. Manter curto (<80 linhas); detalhe vai no projeto.
 - `inbox.md` — captura bruta. Triagem: mover para projeto/ref e apagar do inbox.
 - `projetos/<slug>/` — uma pasta por frente de trabalho.

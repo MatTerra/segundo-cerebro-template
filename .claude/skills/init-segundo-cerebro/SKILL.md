@@ -27,6 +27,7 @@ Rodar em paralelo e montar uma tabela ok/falta:
 - Repositório remoto do vault: criar privado no GitHub (`gh repo create <nome> --private --source . --push`, só com ok) ou outro remoto, ou só local.
 - Preferências de trabalho (respostas curtas? o que nunca fazer?) → [[como-trabalhar]].
 - Frentes de trabalho atuais (nome, cliente, chave Jira, repo, prazo) — viram projetos no passo 5.
+- Gerencia equipe? Se sim: pessoas do time, gestores (ordem das colunas) e quem está em cada frente até quando → `equipe.md` e `alocacao:` (passo 6b).
 
 ## 3. Preencher
 - `CLAUDE.md` > Configuração: trocar cada `{{...}}`. Fonte/tracker ausente: escrever `nenhum` e, nas skills que dependem dele, a skill já pula a etapa.
@@ -52,6 +53,9 @@ Opcional, com ok: varrer `git log --since=60.days` dos repos da pasta configurad
 
 ## 6. Dashboard Agenda (opcional, com ok)
 Seguir `docs/dashboard.md` > Criar. Gravar a URL na Configuração do `CLAUDE.md` e no topo de `scripts/atualizar-agenda.md`.
+
+## 6b. Alocação da equipe (opcional, se gerencia equipe)
+`equipe.md` de `templates/equipe.md` com as pessoas; `alocacao:` nos hubs criados no passo 5; depois `/alocacao` (publica e grava a URL em Configuração). Não gerencia: `Página de alocação: nenhuma`.
 
 ## 7. Tarefa agendada (opcional, com ok)
 Criar com o tool `create_scheduled_task` (scheduled-tasks) usando o prompt de `scripts/tarefa-agendada-agenda.md`, com caminho do vault e URL do dashboard preenchidos. Sugestão: `30 7,13 * * 1-5`. Opcional também: `/esquecidos` semanal (prompt no fim do mesmo arquivo). Gravar o id em Configuração.
