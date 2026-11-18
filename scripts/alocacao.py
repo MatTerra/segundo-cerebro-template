@@ -11,7 +11,7 @@ Fontes no vault:
   Com equipe.md, o Gantt e a capacidade mostram só as pessoas listadas; sem ele, os devs citados em `alocacao:`.
 
 Uso:
-  python -I -X utf8 scripts/alocacao.py <saida.html> [--titulo T] [--projetos a,b] [--gestores A,B] [--meses 6] [--hoje YYYY-MM-DD]
+  python -I -X utf8 scripts/alocacao.py <saida.html> [--titulo T] [--projetos a,b] [--gestores A,B] [--meses 6 | --ate YYYY-MM-DD] [--desde YYYY-MM-DD|mes] [--hoje YYYY-MM-DD]
   python -I -X utf8 scripts/alocacao.py --texto [mesmas opções]   (resumo em Markdown no terminal)
 """
 import argparse
@@ -243,6 +243,7 @@ b{font-weight:600}.q{color:var(--muted)}
 .axis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
 .tick{position:absolute;top:0;bottom:0;border-left:1px solid var(--line)}
 .hol{position:absolute;top:-1px;bottom:-1px;border-left:2px dashed var(--muted);z-index:1}
+.now{position:absolute;top:-1px;bottom:-1px;border-left:2px solid var(--late);z-index:3}
 .bar{position:absolute;top:2px;height:16px;border-radius:3px;background:var(--accent);color:var(--on);font-size:10.5px;line-height:16px;padding:0 5px;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:2}
 .bar.soon{background:var(--warn)}.bar.pause{opacity:.55}.bar.late{background:var(--late)}
 .bar.off{background:repeating-linear-gradient(45deg,var(--line) 0 4px,transparent 4px 8px);color:var(--muted);border:1px solid var(--line)}
@@ -280,23 +281,29 @@ def cortar(ini, fim, buracos):
     return partes
 
 
-def gantt(itens, a, ausencias, feriados, hoje, meses):
-    d0 = hoje
-    m, y = hoje.month + meses, hoje.year
-    y += (m - 1) // 12
-    m = (m - 1) % 12 + 1
-    d1 = date(y, m, min(hoje.day, 28))
+def gantt(itens, a, ausencias, feriados, hoje, meses, desde=None, ate=None):
+    # janela: --desde (padrão hoje) até --ate (inclusivo) ou hoje + --meses
+    d0 = desde or hoje
+    if ate:
+        d1 = ate + timedelta(days=1)
+    else:
+        m, y = hoje.month + meses, hoje.year
+        y += (m - 1) // 12
+        m = (m - 1) % 12 + 1
+        d1 = date(y, m, min(hoje.day, 28))
     span = (d1 - d0).days or 1
 
     def p(x):
         return max(0.0, min(100.0, (x - d0).days / span * 100))
 
-    ticks, t = [], date(d0.year + (d0.month == 12), d0.month % 12 + 1, 1)
+    ticks, t = [], d0 if d0.day == 1 else date(d0.year + (d0.month == 12), d0.month % 12 + 1, 1)
     while t < d1:
         ticks.append(t)
         t = date(t.year + (t.month == 12), t.month % 12 + 1, 1)
     deco = "".join(f'<div class="tick" style="left:{p(t):.2f}%"></div>' for t in ticks)
     deco += "".join(f'<div class="hol" style="left:{p(f):.2f}%" title="{E(n)}"></div>' for f, n in feriados if d0 <= f < d1)
+    if d0 < hoje < d1:
+        deco += f'<div class="now" style="left:{p(hoje):.2f}%" title="hoje"></div>'
     eixo = "".join(f'<span style="left:{p(t):.2f}%">{MESES[t.month - 1]}{" " + t.strftime("%y") if t.month == 1 else ""}</span>' for t in ticks)
     h = [f'<div></div><div class="axis">{eixo}</div>']
     for dev in a["devs"]:
@@ -319,7 +326,7 @@ def gantt(itens, a, ausencias, feriados, hoje, meses):
                 for pi, pf in cortar(ini, i["fim"], buracos):
                     barras.append((pi, pf, i["frente"], cls, i["fim"].strftime("%d/%m")))
             else:
-                for pi, pf in cortar(ini, ini + timedelta(days=21), buracos):
+                for pi, pf in cortar(ini, max(ini, hoje) + timedelta(days=21), buracos):
                     barras.append((pi, pf, i["frente"], "open", "sem prazo"))
         barras.sort(key=lambda b: b[0])
         lanes = []  # sub-faixas sem sobreposição
@@ -348,12 +355,13 @@ def gantt(itens, a, ausencias, feriados, hoje, meses):
            '<span><i style="background:var(--accent);opacity:.55"></i>pausado (retomada)</span>'
            '<span><i style="background:linear-gradient(90deg,var(--accent),transparent)"></i>sem prazo</span>'
            '<span><i style="background:repeating-linear-gradient(45deg,var(--line) 0 3px,transparent 3px 6px);border:1px solid var(--line)"></i>ausência</span>'
+           + ('<span><i style="width:2px;background:var(--late)"></i>hoje</span>' if d0 < hoje < d1 else "")
            + ('<span>┆ feriado</span>' if any(d0 <= f < d1 for f, _ in feriados) else "") + "</div>")
-    return (f'<section><h2>Alocação dos devs <small>{d0.isoformat()} a {d1.isoformat()} · ordem alfabética</small></h2>'
+    return (f'<section><h2>Alocação dos devs <small>{d0.isoformat()} a {(d1 - timedelta(days=1)).isoformat()} · ordem alfabética</small></h2>'
             f'<div class="gantt">{"".join(h)}</div>{leg}</section>')
 
 
-def pagina(itens, a, ausencias, feriados, hoje, titulo, meses, ordem):
+def pagina(itens, a, ausencias, feriados, hoje, titulo, meses, ordem, desde=None, ate=None):
     cap = []
     if a["ausentes"]:
         cap.append("Ausentes hoje: " + ", ".join(f"{x['dev']} (até {fmt(x['fim'])})" for x in a["ausentes"]))
@@ -402,7 +410,7 @@ def pagina(itens, a, ausencias, feriados, hoje, titulo, meses, ordem):
         pend.append(f'<li><span><b>Sem prazo</b>: {E(" · ".join(a["sem_prazo"]))}</span></li>')
     if pend:
         secs.append(f'<section><h2>Sair com dono e prazo</h2><ul class="flat">{"".join(pend)}</ul></section>')
-    secs.append(gantt(itens, a, ausencias, feriados, hoje, meses))
+    secs.append(gantt(itens, a, ausencias, feriados, hoje, meses, desde, ate))
 
     leg = ('<span class="d late">vencido</span><span class="d soon">até 7 dias</span>'
            '<span class="d">depois</span><span class="d none">sem prazo</span>')
@@ -426,6 +434,8 @@ def main():
     ap.add_argument("--gestores", default="", help="ordem das colunas")
     ap.add_argument("--meses", type=int, default=6)
     ap.add_argument("--hoje", default="")
+    ap.add_argument("--desde", default="", help="início do Gantt: YYYY-MM-DD ou 'mes' (dia 1 do mês de hoje)")
+    ap.add_argument("--ate", default="", help="fim do Gantt (YYYY-MM-DD, inclusivo); substitui --meses")
     o = ap.parse_args()
     if not o.texto and not o.saida:
         ap.error("informe <saida.html> ou --texto")
@@ -439,7 +449,8 @@ def main():
         print(texto(itens, a, hoje))
         return
     ordem = [g.strip() for g in o.gestores.split(",") if g.strip()]
-    Path(o.saida).write_text(pagina(itens, a, ausencias, feriados, hoje, o.titulo, o.meses, ordem), encoding="utf-8")
+    desde = hoje.replace(day=1) if o.desde == "mes" else d(o.desde)
+    Path(o.saida).write_text(pagina(itens, a, ausencias, feriados, hoje, o.titulo, o.meses, ordem, desde, d(o.ate)), encoding="utf-8")
     print(f"{len(itens)} itens de alocação, {len(a['devs'])} pessoas -> {o.saida}")
 
 

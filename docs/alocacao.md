@@ -42,9 +42,10 @@ Formato: `"frente | estado | gestor | dev | início | fim | nota"`.
 
 ## Gerar
 ```bash
-python -I -X utf8 scripts/alocacao.py <tmp>/alocacao.html --titulo "Alocação" [--projetos a,b] [--gestores Ana,Davi] [--meses 6] [--hoje YYYY-MM-DD]
+python -I -X utf8 scripts/alocacao.py <tmp>/alocacao.html --titulo "Alocação" [--projetos a,b] [--gestores Ana,Davi] [--meses 6 | --ate YYYY-MM-DD] [--desde YYYY-MM-DD|mes] [--hoje YYYY-MM-DD]
 python -I -X utf8 scripts/alocacao.py --texto
 ```
+Gantt: padrão de hoje a hoje + `--meses`; `--desde mes` começa no dia 1 do mês corrente (linha vermelha marca hoje), `--ate` fixa o fim.
 `--texto` imprime o mesmo resumo em Markdown (para responder no chat sem abrir a página).
 
 ## Publicar
