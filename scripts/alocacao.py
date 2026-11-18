@@ -106,6 +106,20 @@ def ativo(i, hoje):
     return i["estado"] == "andamento" and (i["ini"] or hoje) <= hoje and (i["fim"] is None or i["fim"] >= hoje)
 
 
+def proximas_ausencias(ausencias, hoje, dias=30):
+    # ausência que começa nos próximos `dias`, agrupada por período e motivo (férias coletivas viram uma linha)
+    grupos = {}
+    for x in ausencias:
+        if hoje < x["ini"] <= hoje + timedelta(days=dias):
+            grupos.setdefault((x["ini"], x["fim"], x["motivo"]), []).append(x["dev"])
+    return [{"ini": k[0], "fim": k[1], "motivo": k[2], "devs": v} for k, v in sorted(grupos.items())]
+
+
+def txt_proximas(l, total):
+    return ", ".join(f"{fmt(x['ini'])} a {fmt(x['fim'])} {x['motivo']}: "
+                     + ("todos" if total and len(x["devs"]) >= total else ", ".join(x["devs"])) for x in l)
+
+
 def analisar(itens, pessoas, ausencias, hoje):
     # com equipe.md, só as pessoas listadas (gestor que executa algo não vira linha); sem ele, todos os devs citados
     devs = sorted(set(pessoas) or {i["dev"] for i in itens if i["dev"]}, key=lambda s: sem_acento(s).lower())
@@ -116,7 +130,8 @@ def analisar(itens, pessoas, ausencias, hoje):
                      and i["estado"] in ("andamento", "pausado")] for dev in devs}
     return {
         "devs": devs,
-        "ausentes": [a for a in ausencias if a["fim"] >= hoje],
+        "ausentes": sorted(aus_hoje.values(), key=lambda x: x["fim"]),
+        "proximas": proximas_ausencias(ausencias, hoje),
         "sobrecarga": {dev: l for dev, l in por_dev.items() if len({x["frente"] for x in l}) > 1},
         "livres": [dev for dev in devs if not por_dev[dev] and dev not in aus_hoje and not futuros[dev]],
         "livres_depois": {dev: max(x["fim"] for x in por_dev[dev] + futuros[dev]) for dev in devs
@@ -168,7 +183,9 @@ def texto(itens, a, hoje):
     out.append("## Devs sem frente hoje: " + (", ".join(a["livres"]) or "nenhum"))
     if a["livres_depois"]:
         out.append("## Ficam livres: " + ", ".join(f"{dev} depois de {fmt(x)}" for dev, x in sorted(a["livres_depois"].items(), key=lambda t: t[1])))
-    out.append("## Ausentes: " + (", ".join(f"{x['dev']} até {fmt(x['fim'])} ({x['motivo']})" for x in a["ausentes"]) or "ninguém"))
+    out.append("## Ausentes hoje: " + (", ".join(f"{x['dev']} até {fmt(x['fim'])} ({x['motivo']})" for x in a["ausentes"]) or "ninguém"))
+    if a["proximas"]:
+        out.append("## Próximas ausências: " + txt_proximas(a["proximas"], len(a["devs"])))
     out.append("## Em mais de uma frente: " + (", ".join(f"{dev} ({len({x['frente'] for x in l})})" for dev, l in a["sobrecarga"].items()) or "ninguém"))
     return "\n".join(out)
 
@@ -339,7 +356,9 @@ def gantt(itens, a, ausencias, feriados, hoje, meses):
 def pagina(itens, a, ausencias, feriados, hoje, titulo, meses, ordem):
     cap = []
     if a["ausentes"]:
-        cap.append("Ausentes: " + ", ".join(f"{x['dev']} (até {fmt(x['fim'])})" for x in a["ausentes"]))
+        cap.append("Ausentes hoje: " + ", ".join(f"{x['dev']} (até {fmt(x['fim'])})" for x in a["ausentes"]))
+    if a["proximas"]:
+        cap.append("Próximas ausências: " + txt_proximas(a["proximas"], len(a["devs"])))
     if a["sobrecarga"]:
         cap.append("Em mais de uma frente: " + ", ".join(f"{dev} ({len({x['frente'] for x in l})})" for dev, l in a["sobrecarga"].items()))
     cap.append("Sem frente hoje: " + (", ".join(a["livres"]) or "ninguém"))
