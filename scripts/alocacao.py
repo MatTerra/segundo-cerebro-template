@@ -11,7 +11,7 @@ Fontes no vault:
   Com equipe.md, o Gantt e a capacidade mostram só as pessoas listadas; sem ele, os devs citados em `alocacao:`.
 
 Uso:
-  python -I -X utf8 scripts/alocacao.py <saida.html> [--titulo T] [--projetos a,b] [--gestores A,B] [--meses 6 | --ate YYYY-MM-DD] [--desde YYYY-MM-DD|mes] [--hoje YYYY-MM-DD]
+  python -I -X utf8 scripts/alocacao.py <saida.html> [--titulo T] [--projetos a,b] [--gestores A,B] [--meses 3 | --ate YYYY-MM-DD] [--desde YYYY-MM-DD|mes] [--hoje YYYY-MM-DD]
   python -I -X utf8 scripts/alocacao.py --texto [mesmas opções]   (resumo em Markdown no terminal)
 """
 import argparse
@@ -282,15 +282,14 @@ def cortar(ini, fim, buracos):
 
 
 def gantt(itens, a, ausencias, feriados, hoje, meses, desde=None, ate=None):
-    # janela: --desde (padrão hoje) até --ate (inclusivo) ou hoje + --meses
-    d0 = desde or hoje
+    # janela padrão: --meses meses inteiros a partir do dia 1 do mês de hoje (3 = mês atual + 2);
+    # --desde / --ate (inclusivo) sobrescrevem início e fim
+    d0 = desde or hoje.replace(day=1)
     if ate:
         d1 = ate + timedelta(days=1)
     else:
-        m, y = hoje.month + meses, hoje.year
-        y += (m - 1) // 12
-        m = (m - 1) % 12 + 1
-        d1 = date(y, m, min(hoje.day, 28))
+        m = hoje.month - 1 + meses
+        d1 = date(hoje.year + m // 12, m % 12 + 1, 1)
     span = (d1 - d0).days or 1
 
     def p(x):
@@ -432,7 +431,7 @@ def main():
     ap.add_argument("--titulo", default="Alocação da equipe")
     ap.add_argument("--projetos", default="")
     ap.add_argument("--gestores", default="", help="ordem das colunas")
-    ap.add_argument("--meses", type=int, default=6)
+    ap.add_argument("--meses", type=int, default=3, help="meses inteiros no Gantt, a partir do mês atual")
     ap.add_argument("--hoje", default="")
     ap.add_argument("--desde", default="", help="início do Gantt: YYYY-MM-DD ou 'mes' (dia 1 do mês de hoje)")
     ap.add_argument("--ate", default="", help="fim do Gantt (YYYY-MM-DD, inclusivo); substitui --meses")

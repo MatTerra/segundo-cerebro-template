@@ -1,6 +1,6 @@
 ---
 name: alocacao
-description: Relatório de alocação da equipe gerado do vault - frentes por gestor com dev e prazo, em especificação, backlog, sem dono/sem prazo, capacidade (ausências, devs livres) e Gantt dos devs em 6 meses. Publica e mantém a página no claude.ai. Use para "/alocacao", "relatório de alocação", "o que está no colo de cada um", "quem está livre", "o que não está alocado/sem prazo", "pauta de gestão", "gantt da equipe", e quando o dono mudar dev, gestor, prazo ou ausência de uma frente.
+description: Relatório de alocação da equipe gerado do vault - frentes por gestor com dev e prazo, em especificação, backlog, sem dono/sem prazo, capacidade (ausências, devs livres) e Gantt dos devs (mês atual + 2). Publica e mantém a página no claude.ai. Use para "/alocacao", "relatório de alocação", "o que está no colo de cada um", "quem está livre", "o que não está alocado/sem prazo", "pauta de gestão", "gantt da equipe", e quando o dono mudar dev, gestor, prazo ou ausência de uma frente.
 argument-hint: "[--texto] [--projetos a,b]"
 ---
 

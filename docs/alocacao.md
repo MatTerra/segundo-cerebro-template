@@ -7,7 +7,7 @@ Seções:
 - **Uma coluna por gestor**: frentes em andamento ou pausadas, devs, nota e prazo (vencido, até 7 dias, depois, sem prazo).
 - **Em especificação** (para alocar) e **Backlog** (contexto).
 - **Sair com dono e prazo**: frentes em andamento sem dev ou sem prazo.
-- **Gantt**: todas as pessoas de `equipe.md` em ordem alfabética, inclusive sem frente; 6 meses a partir de hoje; ausências hachuradas, interrompendo as barras das frentes do dev (férias coletivas = uma linha por pessoa em `equipe.md`); feriados tracejados; frente sem prazo esmaece.
+- **Gantt**: todas as pessoas de `equipe.md` em ordem alfabética, inclusive sem frente; 3 meses inteiros a partir do mês atual; ausências hachuradas, interrompendo as barras das frentes do dev (férias coletivas = uma linha por pessoa em `equipe.md`); feriados tracejados; frente sem prazo esmaece.
 
 ## Dados
 
@@ -42,10 +42,10 @@ Formato: `"frente | estado | gestor | dev | início | fim | nota"`.
 
 ## Gerar
 ```bash
-python -I -X utf8 scripts/alocacao.py <tmp>/alocacao.html --titulo "Alocação" [--projetos a,b] [--gestores Ana,Davi] [--meses 6 | --ate YYYY-MM-DD] [--desde YYYY-MM-DD|mes] [--hoje YYYY-MM-DD]
+python -I -X utf8 scripts/alocacao.py <tmp>/alocacao.html --titulo "Alocação" [--projetos a,b] [--gestores Ana,Davi] [--meses 3 | --ate YYYY-MM-DD] [--desde YYYY-MM-DD|mes] [--hoje YYYY-MM-DD]
 python -I -X utf8 scripts/alocacao.py --texto
 ```
-Gantt: padrão de hoje a hoje + `--meses`; `--desde mes` começa no dia 1 do mês corrente (linha vermelha marca hoje), `--ate` fixa o fim.
+Gantt: padrão `--meses 3` = meses inteiros, do dia 1 do mês atual ao fim do 2º mês seguinte (linha vermelha marca hoje). `--desde` (data ou `mes`) e `--ate` sobrescrevem início e fim.
 `--texto` imprime o mesmo resumo em Markdown (para responder no chat sem abrir a página).
 
 ## Publicar
